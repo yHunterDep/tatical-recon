@@ -2,7 +2,7 @@
 HunterRecon is a bash Tool to find vulnerabilities on websites.
 
 # Nuclei Templates Used
-https://github.com/projectdiscovery/nuclei-templates
+https://github.com/projectdiscovery/nuclei-templates<br>
 https://github.com/pikpikcu/nuclei-templates => ~/nco/nucl-ant
 
 # Ports
