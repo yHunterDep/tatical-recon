@@ -4,6 +4,14 @@ HunterRecon is a bash Tool to find vulnerabilities on websites.
 # Version
 0.1
 
+# Help
+./hunter-recon.sh -h
+```bash
+HunterRecon: Help
+-th:    Use theHarvesterTool
+-all-apis:      Use -all of subfinder
+```
+
 # Tools
 - [Subfinder](https://github.com/projectdiscovery/subfinder)
 - [Sublist3r](https://github.com/aboul3la/Sublist3r)
