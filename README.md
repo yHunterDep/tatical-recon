@@ -23,6 +23,9 @@ HunterRecon is a bash Tool to find vulnerabilities on websites.
 - [WaybaclUrls](https://github.com/tomnomnom/waybackurls)
 - [Hakrawler](https://github.com/hakluke/hakrawler)
 - [Qsreplace](https://github.com/tomnomnom/qsreplace)
+- [Gf](https://github.com/tomnomnom/gf)
+- [AiriXSS](https://github.com/ferreiraklet/airixss)
+- []()
 
 # Nuclei Templates Used
 https://github.com/projectdiscovery/nuclei-templates<br>
