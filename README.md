@@ -4,6 +4,13 @@ HunterRecon is a bash Tool to find vulnerabilities on websites.
 # Version
 0.1
 
+# Tools
+- [Subfinder](https://github.com/projectdiscovery/subfinder)
+- [Sublist3r](https://github.com/aboul3la/Sublist3r)
+- [ShodanX](https://github.com/RevoltSecurities/ShodanX)
+- [Assetfinder](https://github.com/tomnomnom/assetfinder)
+- [Findomain](https://github.com/Findomain/Findomain)
+
 # Nuclei Templates Used
 https://github.com/projectdiscovery/nuclei-templates<br>
 https://github.com/pikpikcu/nuclei-templates => ~/nco/nucl-ant: line 130
