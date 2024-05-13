@@ -74,8 +74,8 @@ fi
 banner
 echo "===== Atives && IPS Recon ====="
 cat subs.rs | httpx -t 100 --silent | anew vivos.rs
-cat vivos.rs | dnsx -a --resp-only --silent | anew ips.rs
-cat vivos.rs | dnsx -a --resp --silent | anew dips.rs
+cat subs.rs | dnsx -a --resp-only --silent | anew ips.rs
+cat subs.rs | dnsx -a --resp --silent | anew dips.rs
 cat vivos.rs | httpx --silent -td --title | anew techs.rs
 naabu -list ips.rs -p $ports -c 150 -o naabu-full.txt
 cat naabu-full.txt | httpx --silent -t 100 | anew vivos.rs
