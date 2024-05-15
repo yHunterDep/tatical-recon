@@ -2,7 +2,9 @@
 HunterRecon is a bash Tool to find vulnerabilities on websites.
 
 # Version
-0.1
+0.2
+- A beautiful banner.
+- Scan with Enhanced Nuclei.
 
 # Help
 ```
