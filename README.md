@@ -41,7 +41,7 @@ HunterRecon: Help
 - [Qsreplace](https://github.com/tomnomnom/qsreplace)
 - [Gf](https://github.com/tomnomnom/gf)
 - [AiriXSS](https://github.com/ferreiraklet/airixss)
-- [Dalfox](https://github.com/hahwul/dalfox)
+- [ListDomains](https://github.com/yHunterDep/listdomains/)
 
 # Nuclei Templates Used
 https://github.com/projectdiscovery/nuclei-templates<br>
