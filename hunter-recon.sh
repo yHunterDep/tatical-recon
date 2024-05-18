@@ -21,12 +21,6 @@ if echo $* | grep '\-h' -q;then
         echo '-all-apis:      Use -all of subfinder'
         exit;
 fi
-if echo $* | grep '\-th' -q;then
-        hav=true
-fi
-if echo $* | grep '\-all-apis' -q;then
-        alp=true
-fi
 
 echo "===== Subdomains Recon ====="
 sublist3r -d $site -o subs.rs
@@ -37,14 +31,14 @@ echo $site | haktrails subdomains | anew subs.rs
 chaos-client -d $site --silent | anew subs.rs
 listdomains -d $site --subs --silent | anew subs.rs
 
-if $alp;then
+if echo $* | grep '\-all-apis' -q;then
         banner
         echo "===== Subfinder (APIS) Recon ====="
         subfinder -d $site --silent -all | anew subs.rs
 else
         subfinder -d $site --silent | anew subs.rs
 fi
-if $hav;then
+if echo $* | grep '\-th' -q;then
         banner
         echo "===== TheHarvester Recon ====="
         theHarvester -d $site -l 500 -b all -s -f havt
@@ -123,7 +117,7 @@ echo "===== Nuclei Scan ====="
 mkdir Nuclei-Tests
 
 cat vivos.rs | nuclei -t ~/nco/nucl-ant/ -es info --silent -o nuclei-old-scan.nucl -c 150
-cat vivos.rs | nuclei -tags cves,cve -c 125 --silent -o nuclei-cve-scan.nucl
+cat vivos.rs | nuclei -t http/cves/ -c 125 --silent -o nuclei-cve-scan.nucl
 cat vivos.rs | nuclei -tags exposure,config,phpinfo,git,env --silent -o nuclei-exposure-scan.nucl -c 150 -es info
 cat vivos.rs | nuclei -tags xss,sqli,lfi,ssti,xxe,crlf -es info --silent -o nuclei-tags.nucl -c 150
 cat vivos.rs | nuclei -tags swagger --silent -o nuclei-swagger.nucl -c 150
