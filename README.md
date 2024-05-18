@@ -35,6 +35,7 @@ HunterRecon 0.3: Help
 - [Haktrails](https://github.com/hakluke/haktrails)
 - [Chaos](https://github.com/projectdiscovery/chaos-client)
 - [theHarvester](https://github.com/laramies/theHarvester)
+- [DNSGen](https://github.com/AlephNullSK/dnsgen)
 - [Nuclei](https://github.com/projectdiscovery/nuclei)
 - [Anew](https://github.com/tomnomnom/anew)
 - [HTTPX](https://github.com/projectdiscovery/httpx)
