@@ -35,7 +35,7 @@ echo $site | assetfinder --subs-only | anew subs.rs
 findomain -t $site -q | anew subs.rs
 echo $site | haktrails subdomains | anew subs.rs
 chaos-client -d $site --silent | anew subs.rs
-listdomains -d $site --subs | anew subs.rs
+listdomains -d $site --subs --silent | anew subs.rs
 
 if $alp;then
         banner
