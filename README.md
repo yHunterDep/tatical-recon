@@ -3,7 +3,7 @@ HunterRecon is a bash Tool to find vulnerabilities on websites.
 
 # Version
 - 0.3
-- Added DnsGen
+- Added DNSGen
 - Added Wilcards Recon
 - Added WordPressRecon
 - Bug Fixes
