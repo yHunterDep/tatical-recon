@@ -2,10 +2,11 @@
 HunterRecon is a bash Tool to find vulnerabilities on websites.
 
 # Version
-- 0.3
-- Added DNSGen
-- Added Wilcards Recon
-- Added WordPressRecon
+- 0.4
+- Update Banner
+- Added Nrich Scan
+- Added JavaScript Scan
+- Added Nuclei Fuzzer
 - Bug Fixes
 
 # Help
@@ -13,12 +14,16 @@ HunterRecon is a bash Tool to find vulnerabilities on websites.
 ./hunter-recon.sh -h
 ```
 ```
-HunterRecon 0.3: Help
+HunterRecon 0.4: Help
 -all-apis:      Use -all of subfinder.
 -th:      Use theHarvesterTool.
 -gen:      Use DnsGen to Recon.
 -wilcards:      Recon on Wilcards
+-nrich:      CVE Scan on IPS with Nrich
+-iis-scan:      Find IIS (Windows Server)
+-js-scan:      Scan JavaScript files with Nuclei
 -wp-recon:      Recon on WordPress subdomains and vulnerabilities.
+-nuclei-fuzzer:      Fuzzing on Parameters with Fuzzing-Templates
 ```
 
 # Usage
