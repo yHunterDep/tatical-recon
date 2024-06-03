@@ -1,5 +1,5 @@
-# HunterRecon
-HunterRecon is a bash Tool to find vulnerabilities on websites.
+# TaticalRecon
+TaticalRecon is a bash Tool to find vulnerabilities on websites.
 
 # Version
 - 0.4
