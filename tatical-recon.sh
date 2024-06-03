@@ -6,7 +6,7 @@ function banner {
         clear
         figlet -c -f slant tatical-recon | lolcat
         echo "            Coded By: HunterDep" | lolcat
-        echo "            Version: 0.4" | lolcat
+        echo "            Version: 0.4.1" | lolcat
         echo "            Command Help: -h" | lolcat
         echo "            Target: $site" | lolcat
         echo
