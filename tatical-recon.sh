@@ -64,7 +64,6 @@ fi
 ### NUCLEI SSL NAMES RECON && WILLCARDS ###
 banner
 echo "====[ SSL Names (Nuclei) ]====="
-echo ; sleep 3
 cat subs.rs | nuclei -t ssl/ssl-dns-names.yaml -c 170 -o ssl-names.nucl --silent
 cat ssl-names.nucl | awk '{ print $5 }' | tr -d '["]' | tr ',' '\n' | grep $site$ | anew subs.rs
 ##############################
@@ -97,7 +96,7 @@ naabu -list ips.rs -p $ports -c 150 --silent -o portscan.txt
 
 banner
 echo "=====[ Live Subdomains ]====="
-cat subs.rs portscan.txt | httpx --silent -t 100 | anew vivos.rs
+cat subs.rs | httpx --silent -t 100 | anew vivos.rs
 cat portscan.txt | httpx --silent -t 100 | anew vivos.rs
 cat vivos.rs | httpx --silent --title -location -td | anew techs.rs
 
