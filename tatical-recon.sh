@@ -169,7 +169,7 @@ if echo $* | grep '\-nuclei-fuzzer';then
         banner
         echo "=====[ Nuclei Fuzzer ]====="
         nuclei -l refletidos.cd -t dast/ -o fuzzer.nucl -c 80 --fuzz --silent
-        fi
+fi
 ############################################################################################
 
 banner
