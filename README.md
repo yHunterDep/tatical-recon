@@ -2,22 +2,22 @@
 TaticalRecon is a bash Tool to find vulnerabilities on websites.
 
 # Version
-- 1.0
-- Added Ports
-- Firebase Scan
-- cPanel Scan
-- Bug Fixes
+- 1.1
+- Urls Mode
+- More Tools
+- Bug Fixed
 
 # Help
 ```
 ./tatical-recon.sh -h
 ```
 ```
-TaticalRecon 1.0: Help
+TaticalRecon 1.1: Help
 -all-apis:      Use -all of subfinder.
 -th:      Use theHarvesterTool.
 -gen:      Use DnsGen to Recon.
 -wilcards:      Recon on Wilcards
+-urls:      Recon on Urls
 
 Scans:
 -nrich:      CVE Scan on IPS with Nrich
@@ -25,7 +25,7 @@ Scans:
 -firebase-scan:      Find Firebase
 -js-scan:      Scan JavaScript files with Nuclei
 -wp-recon:      Recon on WordPress subdomains and vulnerabilities.
--cpanel-scan:      Recon o cPanel
+-cpanel-scan:      Recon on cPanel
 -nuclei-fuzzer:      Fuzzing on Parameters with Fuzzing-Templates
 ```
 
@@ -34,8 +34,9 @@ Scans:
 ./tatical-recon.sh site.com <flags>
 ```
 
-# Tools
+# Tool
 - [Subfinder](https://github.com/projectdiscovery/subfinder)
+- [Subdominator](https://github.com/RevoltSecurities/Subdominator)
 - [Sublist3r](https://github.com/aboul3la/Sublist3r)
 - [ShodanX](https://github.com/RevoltSecurities/ShodanX)
 - [Assetfinder](https://github.com/tomnomnom/assetfinder)
